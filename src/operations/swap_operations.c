@@ -20,11 +20,9 @@ static void	swap_stack(t_stack **stack)
 		return ;
 	first = *stack;
 	second = first->next_node;
-
 	first->next_node = second->next_node;
 	if (second->next_node)
 		second->next_node->prev_node = first;
-
 	second->prev_node = NULL;
 	second->next_node = first;
 	first->prev_node = second;

@@ -10,7 +10,7 @@ OBJDIR = obj
 LIBFT = $(LIBFT_DIR)/libft.a
 
 # Sources
-SRC = $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/operations/*.c) $(wildcard $(SRCDIR)/helpers/*.c) $(wildcard $(SRCDIR)/radix_and_helpers/*.c)
+SRC = $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/operations/*.c) $(wildcard $(SRCDIR)/helpers/*.c) $(wildcard $(SRCDIR)/radix_and_helpers/*.c) $(wildcard $(SRCDIR)/radix_and_helpers/quick_sort3/*.c)
 OBJ = $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
 
 # Output executable
@@ -33,13 +33,17 @@ $(OBJDIR)/helpers:
 $(OBJDIR)/radix_and_helpers:
 	@mkdir -p $(OBJDIR)/radix_and_helpers
 
+$(OBJDIR)/quick_sort3:
+	@mkdir -p $(OBJDIR)/quick_sort3
+
 # Rule to compile .c files into .o
-$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR) $(OBJDIR)/operations $(OBJDIR)/helpers $(OBJDIR)/radix_and_helpers
+$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR) $(OBJDIR)/operations $(OBJDIR)/helpers $(OBJDIR)/radix_and_helpers $(OBJDIR)/quick_sort3
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -I$(INCDIR) -c $< -o $@
 
 # Rule to create the push_swap executable
 $(NAME): $(OBJ)
-	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -o $(NAME)
+	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -lm -o $(NAME)
 
 # Rule to build the libft library
 $(LIBFT):

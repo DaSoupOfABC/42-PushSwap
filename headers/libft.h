@@ -6,7 +6,7 @@
 /*   By: jenlee <jenlee@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/21 15:56:48 by jenlee            #+#    #+#             */
-/*   Updated: 2025/06/13 17:12:54 by jenlee           ###   ########.fr       */
+/*   Updated: 2025/10/17 01:40:32 by jenlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #ifndef LIBFT_H
@@ -117,5 +117,7 @@ void			ft_lstclear(t_list **lst, void (*del)(void*));
 void			ft_lstiteri(t_list *lst, void (*f)(void*));
 
 t_list			*ft_lstmap(t_list *lst, void *(*f)(void*), void (*del)(void *));
+
+void			free_split(char **arr);
 
 #endif

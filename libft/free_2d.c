@@ -1,34 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   radix.c                                            :+:      :+:    :+:   */
+/*   free_2d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jenlee <jenlee@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/17 19:04:00 by jenlee            #+#    #+#             */
-/*   Updated: 2025/10/18 18:33:55 by jenlee           ###   ########.fr       */
+/*   Created: 2025/10/17 01:34:09 by jenlee            #+#    #+#             */
+/*   Updated: 2025/10/20 00:18:54 by jenlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../headers/push_swap.h"
+#include "../headers/libft.h"
 
-void	radix_sort(t_stack **a, t_stack **b, int size, int *counter)
+void	free_split(char **arr)
 {
 	int	i;
-	int	j;
-	int	max_bits;
 
+	if (!arr)
+		return ;
 	i = 0;
-	max_bits = get_max_bits(size, 0);
-	while (i < max_bits)
+	while (arr[i])
 	{
-		j = 0;
-		while (j < size)
-		{
-			radix_handle_bit(a, b, counter, i);
-			j++;
-		}
-		radix_pushback(a, b, counter);
+		free(arr[i]);
 		i++;
 	}
+	free(arr);
 }

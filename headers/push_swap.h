@@ -6,7 +6,7 @@
 /*   By: jenlee <jenlee@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/11 15:07:44 by jenlee            #+#    #+#             */
-/*   Updated: 2025/09/05 18:26:58 by jenlee           ###   ########.fr       */
+/*   Updated: 2025/10/20 01:00:06 by jenlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,17 @@ typedef struct s_stack
 	struct s_stack	*next_node;
 }						t_stack;
 
-typedef struct s_move
+typedef struct s_mainvars
 {
-    int pos_b;
-    int pos_a;
-    int cost_a;
-    int cost_b;
-    int total_cost;
-} 						t_move;
+	int		*num_array;
+	int		*indexed;
+	t_stack	*a;
+	t_stack	*b;
+	char	**args;
+	int		arg_count;
+}	t_mainvars;
 
+//Helpers
 void	sort_array(int *arr, int size);
 void	assign_indices(int *original, int *indexed, int size);
 t_stack	*ft_lstlast_mod(t_stack *lst);
@@ -40,6 +42,15 @@ void	ft_lstdelone_mod(t_stack *lst, void (*del)(void *));
 void	ft_lstclear_mod(t_stack **lst, void (*del)(void *));
 t_stack	*ft_lstnew_mod(int num);
 int		ft_atoi_pushswap(const char *str, int *error);
+int		ft_lstsize_mod(t_stack *lst);
+//Setups
+int		parse_args(int argc, char ***args, int *count);
+int		check_dup(int argc, char *argv[]);
+int		check_atoi(int argc, char *argv[]);
+int		handle_error(t_mainvars *v, int argc, int print_err);
+int		init_and_validate(int argc, char **argv, int **nums, int **indexed);
+int		lists(int *num, int size, t_stack **a);
+int		is_empty_string(const char *str);
 //Operations
 void	ra(t_stack **a, int *counter);
 void	rb(t_stack **b, int *counter);
@@ -53,25 +64,19 @@ void	sa(t_stack **a, int *counter);
 void	sb(t_stack **b, int *counter);
 void	ss(t_stack **a, t_stack **b, int *counter);
 //Sorters
-void radix_sort(t_stack **a, t_stack **b, int size, int *counter);
-int		get_max_value(t_stack *stack);
+int		top_value(t_stack *stack);
+int		get_max_bits(int size, int mode);
+void	radix_pushback(t_stack **a, t_stack **b, int *counter);
+void	radix_handle_bit(t_stack **a, t_stack **b, int *counter, int bit);
+void	radix_sort(t_stack **a, t_stack **b, int size, int *counter);
 void	main_sort(t_stack **a, t_stack **b, int size);
-void	rotate_to_chunk(t_stack **a, int limit, int *counter);
-int		is_sorted(t_stack *a);
-
-//void	greedy_return(t_stack **a, t_stack **b, int *counter);
-
-void	push_and_return_chunks(t_stack **a, t_stack **b, int size\
-, int *counter);
-int		count_stack(t_stack *stack);
-int		find_position(t_stack *stack, int target);
-int		find_next_chunk_index(t_stack *a, int limit);
-int		chunk_sized(int size);
-int		get_min_value(t_stack *stack);
-int		get_value_at(t_stack *stack, int index);
-
-
-void chunk_sort(t_stack **a, t_stack **b, int size, int *counter);
-void greedy_sort(t_stack **a, t_stack **b, int *counter);
+int		is_sorted(t_stack *stack);
+void	small_sort(t_stack **a, t_stack **b, int *counter, int size);
+void	tiny_sort(t_stack **a, t_stack **b, int *counter, int size);
+void	align_head(t_stack **a, int *counter);
+void	sort_five(t_stack **a, t_stack **b, int *counter);
+void	sort_three(t_stack **a, int *counter);
+int		find_min_pos(t_stack *stack, int *pos);
+void	sort_four(t_stack **a, t_stack **b, int *counter);
 
 #endif

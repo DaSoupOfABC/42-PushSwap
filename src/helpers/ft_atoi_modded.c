@@ -6,17 +6,11 @@
 /*   By: jenlee <jenlee@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/14 16:43:33 by jenlee            #+#    #+#             */
-/*   Updated: 2025/06/16 17:25:40 by jenlee           ###   ########.fr       */
+/*   Updated: 2025/10/20 00:59:54 by jenlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../headers/push_swap.h"
 
-static int	is_space(char c)
-{
-	if (c == ' ' || (c >= 9 && c <= 13))
-		return (1);
-	return (0);
-}
+#include "../headers/push_swap.h"
 
 static int	check_limits(long num, int sign)
 {
@@ -29,7 +23,7 @@ static int	check_limits(long num, int sign)
 
 static int	skip_space_and_sign(const char *str, int *i, int *sign)
 {
-	while (is_space(str[*i]))
+	while ((str[*i] == ' ') || (str[*i] >= 9 && str[*i] <= 13))
 		(*i)++;
 	if (str[*i] == '+' || str[*i] == '-')
 	{
@@ -66,4 +60,18 @@ int	ft_atoi_pushswap(const char *str, int *error)
 	if (str[i] != '\0')
 		return (*error = 1, 0);
 	return (result * sign);
+}
+
+int	is_empty_string(const char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] != ' ' && (str[i] < 9 || str[i] > 13))
+			return (0);
+		i++;
+	}
+	return (1);
 }

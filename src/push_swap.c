@@ -5,120 +5,112 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jenlee <jenlee@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/06/11 15:05:46 by jenlee            #+#    #+#             */
-/*   Updated: 2025/08/21 00:21:31 by jenlee           ###   ########.fr       */
+/*   Created: 2025/10/20 00:13:03 by jenlee            #+#    #+#             */
+/*   Updated: 2025/10/20 01:02:04 by jenlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "../headers/push_swap.h"
 
-int	check_dup(int argc, char *argv[])
+int	handle_error(t_mainvars *v, int argc, int print_err)
 {
-	int	i;
-	int	j;
+	if (print_err)
+		ft_putstr_fd("Error\n", 2);
+	if (argc == 2 && v->args)
+		free_split(v->args);
+	free(v->indexed);
+	free(v->num_array);
+	return (1);
+}
 
+static long long	*parse_numbers(int argc, char *argv[], int *error)
+{
+	long long	*vals;
+	int			i;
+	int			err;
+
+	vals = malloc(sizeof(long long) * (argc - 1));
+	if (!vals)
+		return (NULL);
 	i = 1;
-	while (argv[i])
+	while (i < argc)
+	{
+		vals[i - 1] = ft_atoi_pushswap(argv[i], &err);
+		if (err)
+		{
+			free(vals);
+			*error = 1;
+			return (NULL);
+		}
+		i++;
+	}
+	*error = 0;
+	return (vals);
+}
+
+int	check_dup_values(int argc, char *argv[])
+{
+	long long	*vals;
+	int			i;
+	int			j;
+	int			error;
+
+	vals = parse_numbers(argc, argv, &error);
+	if (!vals || error)
+		return (-1);
+	i = 0;
+	while (i < argc - 2)
 	{
 		j = i + 1;
-		while (j < argc)
+		while (j < argc - 1)
 		{
-			if (ft_strcmp(argv[i], argv[j]) == 0)
+			if (vals[i] == vals[j])
+			{
+				free(vals);
 				return (-1);
+			}
 			j++;
 		}
 		i++;
 	}
+	free(vals);
 	return (0);
 }
 
-int	check_atoi(int argc, char *argv[])
+static int	setup_and_validate(t_mainvars *v, int argc, char **argv)
 {
-	int	i;
-	int	error;
-
-	i = 1;
-	while (i < argc)
-	{
-		if (ft_atoi_pushswap(argv[i], &error) == 0 && error)
-			return (-1);
-		i++;
-	}
+	if (!parse_args(argc, &argv, &v->arg_count))
+		return (1);
+	v->args = argv;
+	if (check_dup_values(v->arg_count + 1, v->args - 1) != 0)
+		return (handle_error(v, argc, 1));
+	if (!init_and_validate(v->arg_count + 1, v->args - 1,
+			&v->num_array, &v->indexed)
+		|| !lists(v->indexed, v->arg_count, &v->a))
+		return (handle_error(v, argc, 0));
 	return (0);
-}
-
-int	lists(int *num, int size, t_stack **a)
-{
-	int		i;
-	t_stack	*new_node;
-
-	i = 0;
-	while (i < size)
-	{
-		new_node = ft_lstnew_mod(num[i]);
-		if (!new_node)
-		{
-			ft_lstclear_mod(a, free);
-			return (0);
-		}
-		ft_lstadd_back_mod(a, new_node);
-		i++;
-	}
-	return (1);
-}
-
-static int	init_and_validate(int argc, char **argv, int **nums, int **indexed)
-{
-	int		i;
-	int		j;
-
-	i = 1;
-	j = 0;
-	*nums = NULL;
-	*indexed = NULL;
-	*nums = malloc(sizeof(int) * (argc - 1));
-	if (!*nums)
-		return (0);
-	while (argv[i])
-	{
-		(*nums)[j] = ft_atoi(argv[i]);
-		i++;
-		j++;
-	}
-	*indexed = malloc(sizeof(int) * (argc - 1));
-	if (!*indexed)
-	{
-		free(*nums);
-		return (0);
-	}
-	assign_indices(*nums, *indexed, argc - 1);
-	return (1);
 }
 
 int	main(int argc, char **argv)
 {
-	int		*num_array;
-	int		*indexed;
-	t_stack	*a;
-	t_stack	*b;
+	t_mainvars	v;
 
-	a = NULL;
-	b = NULL;
+	v.a = NULL;
+	v.b = NULL;
+	v.args = NULL;
 	if (argc < 2)
-		return (ft_putstr("Too Little Arguments\n"), 1);
-	if (check_dup(argc, argv) != 0 || check_atoi(argc, argv) != 0)
-		return (ft_putstr_fd("Error\n", 2), 1);
-	if (!init_and_validate(argc, argv, &num_array, &indexed))
-		return (1);
-	if (!lists(indexed, argc - 1, &a))
+		exit(0);
+	if (argc == 2 && is_empty_string(argv[1]))
 	{
-		free(num_array);
-		free(indexed);
-		return (1);
+		ft_putstr_fd("Error\n", 2);
+		exit(1);
 	}
-	main_sort(&a, &b, argc - 1);
-	ft_lstclear_mod(&a, free);
-	ft_lstclear_mod(&b, free);
-	free(indexed);
-	free(num_array);
+	if (setup_and_validate(&v, argc, argv))
+		return (1);
+	if (!is_sorted(v.a))
+		main_sort(&v.a, &v.b, v.arg_count);
+	ft_lstclear_mod(&v.a, free);
+	ft_lstclear_mod(&v.b, free);
+	handle_error(&v, argc, 0);
 	return (0);
 }
