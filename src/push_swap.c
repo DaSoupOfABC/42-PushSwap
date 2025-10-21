@@ -95,9 +95,7 @@ int	main(int argc, char **argv)
 {
 	t_mainvars	v;
 
-	v.a = NULL;
-	v.b = NULL;
-	v.args = NULL;
+	ft_bzero(&v, sizeof(t_mainvars));
 	if (argc < 2)
 		exit(0);
 	if (argc == 2 && is_empty_string(argv[1]))
