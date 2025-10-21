@@ -1,64 +1,65 @@
-# Parent Makefile
-
 # Compiler and flags
-CC = gcc
-CFLAGS = -Wall -Werror -Wextra -g
+CC = cc
+CFLAGS = -Wall -Werror -Wextra
+
+# Directories
 LIBFT_DIR = libft
 INCDIR = headers
 SRCDIR = src
 OBJDIR = obj
 LIBFT = $(LIBFT_DIR)/libft.a
 
-# Sources
-SRC = $(wildcard $(SRCDIR)/*.c) $(wildcard $(SRCDIR)/operations/*.c) $(wildcard $(SRCDIR)/helpers/*.c) $(wildcard $(SRCDIR)/radix_and_helpers/*.c) $(wildcard $(SRCDIR)/radix_and_helpers/quick_sort3/*.c)
-OBJ = $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
-
 # Output executable
 NAME = push_swap
 
-# Makefile targets
+# Explicitly listed source files
+SRC = \
+	src/push_swap_helpers.c \
+	src/push_swap.c \
+	src/helpers/lst_help.c \
+	src/helpers/ft_atoi_modded.c \
+	src/helpers/lst_help2.c \
+	src/operations/reverse_rotate_operations.c \
+	src/operations/rotate_operations.c \
+	src/operations/push_operations.c \
+	src/operations/swap_operations.c \
+	src/radix_and_helpers/indices_rank.c \
+	src/radix_and_helpers/radix_utils.c \
+	src/radix_and_helpers/radix.c \
+	src/radix_and_helpers/sort.c \
+	src/radix_and_helpers/small_sorts.c \
+	src/radix_and_helpers/main_sort.c
+
+# Object files
+OBJ = $(SRC:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+
+# Default target
 all: $(LIBFT) $(NAME)
 
-# Create object directory if it doesn't exist
-$(OBJDIR):
-	@mkdir -p $(OBJDIR)
-
-# Create the subdirectories under obj/ for each source subdir
-$(OBJDIR)/operations:
-	@mkdir -p $(OBJDIR)/operations
-
-$(OBJDIR)/helpers:
-	@mkdir -p $(OBJDIR)/helpers
-
-$(OBJDIR)/radix_and_helpers:
-	@mkdir -p $(OBJDIR)/radix_and_helpers
-
-$(OBJDIR)/quick_sort3:
-	@mkdir -p $(OBJDIR)/quick_sort3
-
-# Rule to compile .c files into .o
-$(OBJDIR)/%.o: $(SRCDIR)/%.c | $(OBJDIR) $(OBJDIR)/operations $(OBJDIR)/helpers $(OBJDIR)/radix_and_helpers $(OBJDIR)/quick_sort3
+# Create object files from source files
+$(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -I$(INCDIR) -c $< -o $@
 
-# Rule to create the push_swap executable
+# Link all objects into executable
 $(NAME): $(OBJ)
 	$(CC) $(CFLAGS) $(OBJ) $(LIBFT) -lm -o $(NAME)
 
-# Rule to build the libft library
+# Build libft
 $(LIBFT):
 	$(MAKE) -C $(LIBFT_DIR)
 
-# Clean up object files and other build artifacts
+# Clean object files
 clean:
 	rm -rf $(OBJDIR)
 	$(MAKE) clean -C $(LIBFT_DIR)
 
+# Clean all generated files
 fclean: clean
 	rm -f $(NAME)
 	$(MAKE) fclean -C $(LIBFT_DIR)
 
+# Rebuild everything
 re: fclean all
 
 .PHONY: all clean fclean re
-
