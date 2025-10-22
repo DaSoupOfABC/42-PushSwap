@@ -12,26 +12,6 @@
 
 #include "../headers/push_swap.h"
 
-int	check_dup(int argc, char *argv[])
-{
-	int	i;
-	int	j;
-
-	i = 1;
-	while (argv[i])
-	{
-		j = i + 1;
-		while (j < argc)
-		{
-			if (ft_strcmp(argv[i], argv[j]) == 0)
-				return (-1);
-			j++;
-		}
-		i++;
-	}
-	return (0);
-}
-
 int	lists(int *num, int size, t_stack **a)
 {
 	int		i;
@@ -78,21 +58,45 @@ int	init_and_validate(int argc, char **argv, int **nums, int **indexed)
 	return (1);
 }
 
+char	*join_all_args(int argc, char **argv)
+{
+	char	*joined;
+	char	*tmp;
+	int		i;
+
+	joined = ft_strdup("");
+	if (!joined)
+		return (NULL);
+	i = 1;
+	while (i < argc)
+	{
+		tmp = joined;
+		joined = ft_strjoin(joined, argv[i]);
+		free(tmp);
+		if (i < argc - 1)
+		{
+			tmp = joined;
+			joined = ft_strjoin(joined, " ");
+			free(tmp);
+		}
+		i++;
+	}
+	return (joined);
+}
+
 int	parse_args(int argc, char ***args, int *count)
 {
-	if (argc == 2)
-	{
-		*args = ft_split((*args)[1], ' ');
-		if (!*args)
-			return (ft_putstr_fd("Error\n", 2), 0);
-		*count = 0;
-		while ((*args)[*count])
-			(*count)++;
-	}
-	else
-	{
-		*args = *args + 1;
-		*count = argc - 1;
-	}
+	char	*joined;
+
+	joined = join_all_args(argc, *args);
+	if (!joined)
+		return (ft_putstr_fd("Error\n", 2), 0);
+	*args = ft_split(joined, ' ');
+	free(joined);
+	if (!*args)
+		return (ft_putstr_fd("Error\n", 2), 0);
+	*count = 0;
+	while ((*args)[*count])
+		(*count)++;
 	return (1);
 }

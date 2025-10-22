@@ -6,7 +6,7 @@
 /*   By: jenlee <jenlee@student.42kl.edu.my>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/20 00:13:03 by jenlee            #+#    #+#             */
-/*   Updated: 2025/10/20 01:02:04 by jenlee           ###   ########.fr       */
+/*   Updated: 2025/10/22 21:12:16 by jenlee           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,9 +14,10 @@
 
 int	handle_error(t_mainvars *v, int argc, int print_err)
 {
+	(void)argc;
 	if (print_err)
 		ft_putstr_fd("Error\n", 2);
-	if (argc == 2 && v->args)
+	if (v->args)
 		free_split(v->args);
 	free(v->indexed);
 	free(v->num_array);
@@ -94,14 +95,20 @@ static int	setup_and_validate(t_mainvars *v, int argc, char **argv)
 int	main(int argc, char **argv)
 {
 	t_mainvars	v;
+	int			i;
 
+	i = 0;
 	ft_bzero(&v, sizeof(t_mainvars));
 	if (argc < 2)
 		exit(0);
-	if (argc == 2 && is_empty_string(argv[1]))
+	while (argv[i])
 	{
-		ft_putstr_fd("Error\n", 2);
-		exit(1);
+		if (is_empty_string(argv[i]))
+		{
+			ft_putstr_fd("Error\n", 2);
+			exit(1);
+		}
+		i++;
 	}
 	if (setup_and_validate(&v, argc, argv))
 		return (1);

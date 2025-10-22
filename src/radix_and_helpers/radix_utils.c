@@ -31,8 +31,6 @@ int	get_max_bits(int size, int mode)
 		bits++;
 	if (mode == 0)
 		return (bits);
-	if (mode == 1)
-		return ((int)(ceil((float)bits / 2)));
 	return (0);
 }
 
